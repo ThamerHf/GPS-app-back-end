@@ -1,0 +1,220 @@
+
+@startuml
+'https://plantuml.com/class-diagram
+
+interface LocationApi {
+    createLocation(request: LocationCreateReqDto): ResponseEntity<LocationResDto>
+    addTags(locationId: String, request: List<TagReqDto>): ResponseEntity<List<TagResDto>>
+    addImages(locationId: String, request: List<Byte>): ResponseEntity<List<ImageResDto>>
+    getLocations(): ResponseEntity<List<LocationResDto>>
+    getLocation(locationId: String): ResponseEntity<LocationResDto>
+    getCollections(): ResponseEntity<CollectionResDto>
+    getCollection(tags: TagReqDto): ResponseEntity<List<LocationResDto>>
+    getImages(locationId: String): ResponseEntity<List<ImageResDto>>
+    updateLocation(locationId: String, request: LocationReqDto): ResponseEntity<LocationResDto>
+    deleteLocation(locationId: String): ResponseEntity<void>
+    deleteTags(tags: List<TagReqDto>): ResponseEntity<void>
+    deleteImages(imagesIds: List<String>): ResponseEntity<void>
+}
+
+interface LocationService {
+    createLocation(request: LocationCreateReqDto): LocationResDto
+    addTags(request: List<TagReqDto>): List<TagResDto>
+    addImages(locationId: String, request: List<Byte>): List<Byte>
+    getLocations(useId): List<LocationResDto>
+    getLocation(locationId: String): LocationResDto
+    getCollections(): CollectionResDto
+    getCollection(tags: TagReqDto): List<LocationResDto>
+    getImages(locationId: String): List<byte[]>
+    updateLocation(locationId: String, request: LocationReqDto): LocationResDto
+    deleteLocation(locationId: String): void
+    deleteTags(tags: List<TagReqDto>): void
+    deleteImages(imagesIds: List<String>): void
+}
+
+interface LocationRepository<LocationEntity, locationId>
+
+
+class LocationController{
+    createLocation(request: LocationCreateReqDto)
+    addTags(request: List<TagReqDto>)
+    addImages(locationId: String, request: List<Byte>)
+    getLocations()
+    getLocation(locationId: String)
+    getCollections()
+    getCollection(tags: TagReqDto)
+    getImages(locationId: String)
+    updateLocation(locationId: String, request: LocationReqDto)
+    deleteLocation(locationId: String): ResponseEntity<void>
+    deleteTags(tags: List<TagReqDto>): ResponseEntity<void>
+    deleteImages(imagesIds: List<String>): ResponseEntity<void>
+}
+
+class LocationServiceImpl {
+    createLocation(request: LocationCreateReqDto)
+    addTags(request: List<TagReqDto>)
+    addImages(locationId: String, request: List<Byte>)
+    getLocations()
+    getLocation(locationId: String)
+    getCollections()
+    getCollection(tags: TagReqDto)
+    getImages(locationId: String)
+    updateLocation(locationId: String, request: LocationReqDto)
+    deleteLocation(locationId: String): void
+    deleteTags(tags: List<TagReqDto>): void
+    deleteImages(imagesIds: List<String>): void
+}
+
+class LocationReqDto {
+    locationTitle: String
+    desc: String
+    tags[]: TagReqDto
+    coordinates: LatLng
+    images[]: Byte[]
+}
+
+
+class TagReqDto {
+    tag: String
+}
+
+class LocationEntity {
+    locationId: String
+    locationTitle: String
+    desc: String
+    tags[]: TagEntity
+    coordinates: LatLng
+    images[]: ImageEntity
+}
+
+class TagEntity {
+    locationTitle: String
+}
+
+class ImageEntity {
+    name: String
+    encoding: Byte[]
+}
+
+class LocationResDto {
+    locationId: String
+    locationTitle: String
+    desc: String
+    tags[]: TagEntity
+    coordinates: LatLng
+    images[]: ImageResDto
+}
+
+class CollectionResDto {
+    tag: String
+    numberOfLocations: Long
+}
+
+class TagResDto {
+    tag: String
+}
+
+class ImageResDto {
+    name: String
+    encoding: byte[]
+}
+
+class LocationMapper {
+
+}
+
+class ImageMapper {
+
+}
+
+LocationApi <|.."implements" LocationController
+LocationReqDto <.."use" LocationApi
+TagReqDto "*"<-- LocationReqDto
+LocationService "1"<--"1"LocationController
+LocationService<|.."implements" LocationServiceImpl
+TagEntity "*"<--"1..*" LocationEntity
+ImageEntity "*" <-- "1" LocationEntity
+LocationEntity <.."use" LocationServiceImpl
+LocationRepository "1"<-- LocationServiceImpl
+LocationResDto <.."use" LocationService
+ImageMapper <.. LocationMapper
+LocationMapper <-- LocationServiceImpl
+CollectionResDto <-- LocationApi
+TagResDto "*"<--"*" LocationResDto
+ImageResDto "*"<-- LocationResDto
+
+@enduml
+
+
+@startuml
+
+package "API Location" {
+package api {
+    interface LocationApi
+}
+
+package controller {
+    class LocationController
+}
+
+package services {
+    package service {
+        class LocationService
+    }
+
+    package serviceImpl {
+        class LocationServiceImpl
+    }
+
+    package mapper {
+        class ImageMapper
+        class LocationMapper
+    }
+}
+
+package model {
+    package dto {
+        package requestDto {
+            class LocationReqDto
+            class TagReqDto
+        }
+
+        package responseDto {
+            class LocationResDto
+            class CollectionResDto
+            class TagResDto
+            class ImageResDto
+        }
+    }
+
+    package entity {
+        class LocationEntity
+        class TagEntity
+        class ImageEntity
+    }
+
+    package repository {
+        interface LocationRepository
+    }
+}
+
+
+LocationApi <|.."implements" LocationController
+LocationReqDto <.."use" LocationApi
+TagReqDto "*"<-- LocationReqDto
+LocationService "1"<--"1"LocationController
+LocationService<|.."implements" LocationServiceImpl
+TagEntity "*"<--"1..*" LocationEntity
+ImageEntity "*" <-- "1" LocationEntity
+LocationEntity <.."use" LocationServiceImpl
+LocationRepository "1"<-- LocationServiceImpl
+LocationResDto <.."use" LocationService
+LocationResDto <.."use" LocationService
+ImageMapper <.. LocationMapper
+LocationMapper <-- LocationServiceImpl
+CollectionResDto <-- LocationApi
+TagResDto "*"<--"*" LocationResDto
+ImageResDto "*"<-- LocationResDto
+}
+
+@enduml
