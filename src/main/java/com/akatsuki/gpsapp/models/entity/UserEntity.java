@@ -1,17 +1,21 @@
 package com.akatsuki.gpsapp.models.entity;
-import com.akatsuki.gpsapp.models.entity.TokenEntity;
 
+import com.akatsuki.gpsapp.models.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import org.hibernate.sql.Update;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Data
-public class UserEntity {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserEntity implements UserDetails {
 
     @Id
     @NonNull
@@ -23,7 +27,7 @@ public class UserEntity {
 
     private String email;
 
-    private String pwd;
+    private String password;
 
     @OneToMany(
             cascade = {
@@ -34,7 +38,42 @@ public class UserEntity {
     @JoinColumn(name = "token_id")
     private List<TokenEntity> tokens;
 
-    public UserEntity() {
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.getRole().name()));
     }
+
+    @Override
+    public String getPassword() {
+        return this.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

@@ -8,6 +8,7 @@ import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class TokenEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @NonNull
     @Column(name = "token_id")
-    private String tokenId;
+    private UUID tokenId;
 
     private String token;
 
