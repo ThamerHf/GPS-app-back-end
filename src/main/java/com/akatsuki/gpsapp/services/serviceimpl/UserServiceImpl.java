@@ -6,17 +6,23 @@ import com.akatsuki.gpsapp.models.entity.UserEntity;
 import com.akatsuki.gpsapp.models.enums.ResponseMessage;
 import com.akatsuki.gpsapp.repository.UserRepository;
 import com.akatsuki.gpsapp.services.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository repository) {
-        this.userRepository = repository;
-    }
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<UserEntity> findByUserName(String userName) {
@@ -43,7 +49,17 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .password(new BCryptPasswordEncoder().encode(request.getPwd()))
+                .password(this.passwordEncoder.encode(request.getPwd()))
                 .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserEntity> userEntity = this.findByUserName(username);
+        if(userEntity.isPresent()) {
+            return userEntity.get();
+        }
+
+        return null;
     }
 }

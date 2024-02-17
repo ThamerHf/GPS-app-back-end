@@ -7,18 +7,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Data
 @Builder
-@NoArgsConstructor
+@Data
+@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class UserEntity implements UserDetails {
 
     @Id
     @NonNull
+    @Column(name = "user_name")
     private String userName;
 
     private String firstName;
@@ -36,7 +39,15 @@ public class UserEntity implements UserDetails {
             },
             fetch = FetchType.EAGER)
     @JoinColumn(name = "token_id")
-    private List<TokenEntity> tokens;
+    private List<TokenEntity> tokens = new ArrayList<>();
+
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id")
+    private List<LocationEntity> locations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
