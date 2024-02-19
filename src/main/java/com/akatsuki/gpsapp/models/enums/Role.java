@@ -1,7 +1,9 @@
 package com.akatsuki.gpsapp.models.enums;
 
-public enum Rights {
+public enum Role {
+
     ADMIN,
-    EDITOR,
-    VIEWER;
+    USER,
+    GUEST;
+
 }

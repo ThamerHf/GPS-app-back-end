@@ -1,14 +1,16 @@
 package com.akatsuki.gpsapp.models.entity;
 
+import com.akatsuki.gpsapp.models.enums.Rights;
+import com.akatsuki.gpsapp.models.enums.Role;
+import com.akatsuki.gpsapp.models.enums.TokenType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Builder
 @Entity
 @Data
 @Table(name = "token")
@@ -24,15 +26,16 @@ public class TokenEntity {
 
     private String token;
 
-    private String tokenType;
+    @Enumerated(EnumType.STRING)
+    private TokenType tokenType;
 
     private Boolean isBlackListed;
 
-    private String owner;
+    @Enumerated(EnumType.STRING)
+    private Role dest;
 
-    private String dest;
-
-    private Boolean isLatest;
+    @Enumerated(EnumType.STRING)
+    private Rights rights;
 
     @ManyToMany(
             mappedBy = "tokens"

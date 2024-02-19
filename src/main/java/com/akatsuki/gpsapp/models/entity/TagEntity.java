@@ -24,7 +24,7 @@ public class TagEntity {
     @ManyToMany(
             mappedBy = "tags"
     )
-    private List<LocationEntity> locations;
+    private List<LocationEntity> locations = new ArrayList<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -35,7 +35,7 @@ public class TagEntity {
     )
     @JoinTable(
             name = "tag_token",
-            joinColumns = @JoinColumn(name = "tag_id"),
+            joinColumns = @JoinColumn(name = "location_id"),
             inverseJoinColumns = @JoinColumn(name = "token_id")
     )
     private List<TokenEntity> tokens = new ArrayList<>();
