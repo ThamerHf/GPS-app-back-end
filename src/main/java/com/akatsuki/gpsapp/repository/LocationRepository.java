@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface LocationRepository extends CrudRepository<LocationEntity, Long> {
 
-    List<LocationResponseDto> getLocationEntitiesByTokens(List<TokenEntity> tokens);
+
 }
