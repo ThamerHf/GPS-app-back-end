@@ -4,9 +4,7 @@ import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ public interface LocationApi {
 
 
     @GetMapping("/{id}")
-    ResponseEntity<LocationResponseDto> getLocation();
+    ResponseEntity<LocationResponseDto> getLocation(@PathVariable long id);
 
     @GetMapping("/{tag}")
     ResponseEntity<List<LocationResponseDto>> getLocationsByTag();
@@ -29,6 +27,6 @@ public interface LocationApi {
     @PostMapping("/{id}")
     ResponseEntity<LocationResponseDto> createLocation();
 
-    @PostMapping("/")
-    ResponseEntity<LocationResponseDto> createLocations();
+   @DeleteMapping("/{id}")
+   ResponseEntity<Void> deleteLocation(@PathVariable long id);
 }

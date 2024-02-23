@@ -1,6 +1,5 @@
 package com.akatsuki.gpsapp.services.serviceimpl;
 
-import com.akatsuki.gpsapp.models.dto.request.RegisterRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
 import com.akatsuki.gpsapp.models.entity.LocationEntity;
 import com.akatsuki.gpsapp.models.entity.UserEntity;
@@ -40,6 +39,35 @@ public class LocationServiceImpl implements LocationService {
             }
             return null;
 
+    }
+
+    public Optional<LocationEntity> getLocationById(long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<UserEntity> userEntity = userService.findByUserName(userDetails.getUsername());
+        if(userEntity.isPresent()) {
+            UserEntity userEntity1 = userEntity.get();
+            List<LocationEntity> locations = userEntity1.getLocations();
+            return locations.stream().filter(location -> location.getLocationId().equals(id))
+                    .findFirst();
+        }else {
+            return Optional.empty();
+        }
+    }
+
+    public void deleteLocation(long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<LocationEntity> location = locationRepository.findById(id);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<UserEntity> userEntity = userService.findByUserName(userDetails.getUsername());
+        if (userEntity.isPresent() && location.isPresent()) {
+            LocationEntity locationGot = location.get();
+            UserEntity userEntity1 = userEntity.get();
+            List<LocationEntity> locations = userEntity1.getLocations();
+            if (locations.contains(locationGot)) {
+                locationRepository.delete(locationGot);
+            }
+        }
     }
     private LocationResponseDto mappingToLocationResponseDto(LocationEntity locationEntity) {
             LocationResponseDto locationResponseDto = new LocationResponseDto();
