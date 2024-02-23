@@ -24,8 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class GlobalConfig {
 
     @Bean
-    public AuthentificationService authentificationService(UserService userService) {
-        return new AuthentificationServiceImpl(userService);
+    public AuthentificationService authentificationService(UserService userService, JwsService jwsService,
+                                                           AuthenticationManager authenticationManager) {
+        return new AuthentificationServiceImpl(userService, jwsService, authenticationManager);
     };
     @Bean
     public UserService userService(UserRepository repository, PasswordEncoder passwordEncoder) {

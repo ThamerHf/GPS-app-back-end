@@ -33,6 +33,15 @@ public class LocationEntity {
     @JoinColumn(name = "image_id")
     private List<ImageEntity> images = new ArrayList<>();
 
+    @ManyToOne(
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST
+            },
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_name")
+    private UserEntity user;
+
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {

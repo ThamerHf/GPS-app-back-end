@@ -20,7 +20,6 @@ public class TokenEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @NonNull
     @Column(name = "token_id")
     private String tokenId;
 
@@ -46,4 +45,8 @@ public class TokenEntity {
             mappedBy = "tokens"
     )
     private List<TagEntity> tags = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_name")  // Assuming there's a user_id column in TokenEntity referencing the primary key of UserEntity
+    private UserEntity user;
 }

@@ -1,11 +1,14 @@
 package com.akatsuki.gpsapp.services.serviceimpl;
 
 import com.akatsuki.gpsapp.models.entity.TokenEntity;
+import com.akatsuki.gpsapp.models.entity.UserEntity;
+import com.akatsuki.gpsapp.models.enums.Rights;
 import com.akatsuki.gpsapp.models.enums.TokenType;
 import com.akatsuki.gpsapp.repository.JwsTokenRepository;
 import com.akatsuki.gpsapp.services.service.JwsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +17,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class JwsServiceImpl implements JwsService {
 
     @Value("${jws.secretkey}")
@@ -53,11 +57,35 @@ public class JwsServiceImpl implements JwsService {
         return this.extractClaim(jws, Claims::getExpiration);
     }
 
-    public String generateAuthToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        TokenEntity token = this.jwsTokenRepository.save(createToken(TokenType.AUTHENTIFICATION));
+    @Override
+    public String generateAuthToken(UserEntity user) {
+        return this.generateAuthToken(new HashMap<>(), user);
+    }
+
+
+    @Override
+    public String generateAuthToken(Map<String, Object> extraClaims, UserEntity user) {
+        TokenEntity token = createToken(TokenType.AUTHENTIFICATION, user);
         String jws = Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwsExpiration))
+                .setId(token.getTokenId())
+                .signWith(getSignKey())
+                .compact();
+        token.setToken(jws);
+        token.setRights(Rights.ADMIN);
+        this.jwsTokenRepository.save(token);
+
+        return jws;
+    }
+
+    public String generateShareAnonymousToken(Map<String, Object> extraClaims, UserEntity user) {
+        TokenEntity token = createToken(TokenType.SHARE, user);
+        String jws = Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwsExpiration))
                 .setId(token.getTokenId())
@@ -68,26 +96,15 @@ public class JwsServiceImpl implements JwsService {
         return jws;
     }
 
-    public String generateShareAnonymousToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        TokenEntity token = this.jwsTokenRepository.save(createToken(TokenType.SHARE));
-        String jws = Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwsExpiration))
-                .setId(token.getTokenId())
-                .compact();
-        token.setToken(jws);
-        this.jwsTokenRepository.save(token);
-
-        return jws;
-    }
-
-    private TokenEntity createToken(TokenType tokenType) {
+    private TokenEntity createToken(TokenType tokenType, UserEntity user) {
         TokenEntity tokenToSave = TokenEntity
                 .builder()
                 .tokenType(tokenType)
+                .user(user)
+                .isBlackListed(false)
                 .build();
+
+        log.info("hello " + user.getUsername());
 
         return this.jwsTokenRepository.save(tokenToSave);
     }
@@ -130,6 +147,19 @@ public class JwsServiceImpl implements JwsService {
             }
         }
     }
+
+    @Override
+    public void blackListAllToken(String userName) {
+        Optional<List<TokenEntity>> tokenList = this.jwsTokenRepository.findAllNotBlackListedToken(userName);
+        if(tokenList.isPresent()) {
+            if(!tokenList.get().isEmpty()) {
+                tokenList.get().stream()
+                        .map(this::blackList)
+                        .collect(Collectors.toList());
+            }
+        }
+    }
+
     private TokenEntity blackList(TokenEntity token) {
         token.setIsBlackListed(true);
         return this.jwsTokenRepository.save(token);

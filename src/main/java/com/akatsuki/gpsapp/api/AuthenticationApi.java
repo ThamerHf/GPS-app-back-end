@@ -11,21 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping(path = "/auth", consumes = {MediaType.APPLICATION_JSON_VALUE,
         MediaType.APPLICATION_XML_VALUE},
         produces = {MediaType.APPLICATION_JSON_VALUE,
                 MediaType.APPLICATION_XML_VALUE})
-public interface AuthentificationApi {
+public interface AuthenticationApi {
 
     @PostMapping(path = "/register")
     public ResponseEntity<GenericResponseDto> register(@RequestBody RegisterRequestDto request) throws Exception;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto request);
+    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto request) throws CustomizedException;
 
     @PostMapping(path = "/logout")
-    public ResponseEntity<String> login();
+    public ResponseEntity<GenericResponseDto> logout() throws CustomizedException;
 
 }
