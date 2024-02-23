@@ -48,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
     public LocationEntity createLocation(LocationRequestDto locationRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LocationEntity locationEntity = mappingToLocationEntity(locationRequestDto);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getDetails();
         Optional<UserEntity> userEntity = userService.findByUserName(userDetails.getUsername());
         if(userEntity.isPresent()) {
             UserEntity userEntityToSave = userEntity.get();

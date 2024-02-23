@@ -23,7 +23,7 @@ public interface LocationApi {
     ResponseEntity<LocationResponseDto> getLocation(@PathVariable long id);
 
     @PostMapping("/")
-    ResponseEntity<String> createLocation(LocationRequestDto locationRequestDto);
+    ResponseEntity<String> createLocation(@RequestBody LocationRequestDto locationRequestDto);
 
     @PutMapping("/{id}")
     ResponseEntity<String> updateLocation(@PathVariable long id, @RequestBody LocationRequestDto locationRequestDto) throws CustomizedException;

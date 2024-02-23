@@ -35,7 +35,7 @@ public class LocationController implements LocationApi {
     @Override
     public ResponseEntity<String> createLocation(LocationRequestDto locationRequestDto) {
                 this.locationService.createLocation(locationRequestDto);
-                return new ResponseEntity<>(ResponseMessage.USER_NAME_ALREADY_EXISTS.toString(), HttpStatus.CREATED);
+                return new ResponseEntity<>(ResponseMessage.LOCATION_CREATED.toString(), HttpStatus.CREATED);
     }
 
     @Override
