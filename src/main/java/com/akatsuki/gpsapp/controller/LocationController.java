@@ -22,9 +22,10 @@ public class LocationController implements LocationApi {
     private final LocationService locationService;
 
     @Override
-    public ResponseEntity<List<LocationResponseDto>> getAllLocations() {
+    public List<LocationResponseDto> getAllLocations() {
         List<LocationResponseDto> locations = locationService.getAllLocations();
-        return null;
+        System.out.println(locations);
+        return locations;
     }
 
     @Override

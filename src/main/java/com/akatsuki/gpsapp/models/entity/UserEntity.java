@@ -1,6 +1,7 @@
 package com.akatsuki.gpsapp.models.entity;
 
 import com.akatsuki.gpsapp.models.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,10 +32,13 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
+
     private List<TokenEntity> tokens = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<LocationEntity> locations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

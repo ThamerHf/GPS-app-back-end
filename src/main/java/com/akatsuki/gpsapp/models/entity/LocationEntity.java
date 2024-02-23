@@ -1,6 +1,8 @@
 package com.akatsuki.gpsapp.models.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -40,6 +42,7 @@ public class LocationEntity {
             },
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_name")
+    @JsonIgnore
     private UserEntity user;
 
     @ManyToMany(

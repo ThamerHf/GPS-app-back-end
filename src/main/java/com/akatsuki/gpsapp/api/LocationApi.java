@@ -16,7 +16,7 @@ import java.util.List;
 public interface LocationApi {
 
     @GetMapping("/")
-    ResponseEntity<List<LocationResponseDto>> getAllLocations();
+    List<LocationResponseDto> getAllLocations();
 
 
     @GetMapping("/{id} ")

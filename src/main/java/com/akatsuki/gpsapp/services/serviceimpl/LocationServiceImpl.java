@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.awt.desktop.SystemEventListener;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,19 +29,23 @@ public class LocationServiceImpl implements LocationService {
     private final UserService userService;
 
     public List<LocationResponseDto> getAllLocations() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Optional<UserEntity> userEntity = userService.findByUserName(userDetails.getUsername());
-            if(userEntity.isPresent()) {
+        String username = this.userService.getAuthenticatedUser();
+        Optional<UserEntity> userEntity = userService.findByUserName(username);
+        if(userEntity.isPresent()) {
                 UserEntity userEntity1 = userEntity.get();
                 List<LocationEntity> locations = userEntity1.getLocations();
-                return locations.stream()
+                System.out.println("username" + userEntity1.getFirstName());
+            System.out.println(locations);
+            System.out.println("works");
+
+            return locations.stream()
                         .map(this::mappingToLocationResponseDto)
                         .collect(Collectors.toList());
             }
+        else {
+            System.out.println("doesn't work");
             return null;
+        }
 
     }
 
@@ -52,8 +57,10 @@ public class LocationServiceImpl implements LocationService {
         if(userEntity.isPresent()) {
             UserEntity userEntityToSave = userEntity.get();
             locationEntity.setUser(userEntityToSave);
+            System.out.println(locationEntity.getUser().getFirstName());
+
         }
-        return this.locationRepository.save(mappingToLocationEntity(locationRequestDto));
+        return this.locationRepository.save(locationEntity);
     }
 
     @Override
@@ -90,6 +97,8 @@ public class LocationServiceImpl implements LocationService {
         locationEntity.setDescription(locationRequestDto.getDescription());
         locationEntity.setImages(locationRequestDto.getImages());
         locationEntity.setTags(locationRequestDto.getTags());
+        locationEntity.setTags(locationRequestDto.getTags());
+
         return locationEntity;
 
     }
