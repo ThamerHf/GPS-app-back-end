@@ -2,7 +2,6 @@ package com.akatsuki.gpsapp.models.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.awt.geom.Point2D;

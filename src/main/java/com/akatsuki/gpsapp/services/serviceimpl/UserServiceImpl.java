@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserEntity> findByUserName(String userName) {
+
         return this.userRepository.findByUserName(userName);
     }
 
