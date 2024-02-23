@@ -1,12 +1,15 @@
 package com.akatsuki.gpsapp.config;
 
 import com.akatsuki.gpsapp.repository.JwsTokenRepository;
+import com.akatsuki.gpsapp.repository.LocationRepository;
 import com.akatsuki.gpsapp.repository.UserRepository;
 import com.akatsuki.gpsapp.services.service.AuthentificationService;
 import com.akatsuki.gpsapp.services.service.JwsService;
+import com.akatsuki.gpsapp.services.service.LocationService;
 import com.akatsuki.gpsapp.services.service.UserService;
 import com.akatsuki.gpsapp.services.serviceimpl.AuthentificationServiceImpl;
 import com.akatsuki.gpsapp.services.serviceimpl.JwsServiceImpl;
+import com.akatsuki.gpsapp.services.serviceimpl.LocationServiceImpl;
 import com.akatsuki.gpsapp.services.serviceimpl.UserServiceImpl;
 import lombok.Data;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +34,10 @@ public class GlobalConfig {
     @Bean
     public UserService userService(UserRepository repository, PasswordEncoder passwordEncoder) {
         return new UserServiceImpl(repository, passwordEncoder);
+    };
+    @Bean
+    public LocationService locationService(LocationRepository repository, UserService userService) {
+        return new LocationServiceImpl(repository,userService);
     };
     @Bean
     public PasswordEncoder passwordEncoder() {

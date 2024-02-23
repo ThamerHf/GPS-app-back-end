@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(userEntity);
     }
 
+
     private UserEntity mappingToUserEntity(RegisterRequestDto request) {
         return UserEntity.builder()
                 .userName(request.getUserName())
