@@ -15,12 +15,10 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class UserEntity implements UserDetails {
 
     @Id
-    @NonNull
     @Column(name = "user_name")
     private String userName;
 
@@ -32,21 +30,11 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
-    @OneToMany(
-            cascade = {
-                    CascadeType.MERGE,
-                    CascadeType.PERSIST
-            },
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "token_id")
+    @OneToMany(mappedBy = "user")
     private List<TokenEntity> tokens = new ArrayList<>();
 
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "location_id")
+    @OneToMany(mappedBy = "user")
     private List<LocationEntity> locations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -58,13 +46,8 @@ public class UserEntity implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return this.getPassword();
-    }
-
-    @Override
     public String getUsername() {
-        return this.getUsername();
+        return this.userName;
     }
 
     @Override

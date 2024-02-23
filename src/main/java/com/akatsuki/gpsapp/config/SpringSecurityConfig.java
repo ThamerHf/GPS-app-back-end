@@ -29,10 +29,9 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests
-                                .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // This is for H2 browser console access.
                 .sessionManagement((sessionManagement) ->
