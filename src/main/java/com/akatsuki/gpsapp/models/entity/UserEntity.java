@@ -31,14 +31,13 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
-
     private List<TokenEntity> tokens = new ArrayList<>();
 
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<LocationEntity> locations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

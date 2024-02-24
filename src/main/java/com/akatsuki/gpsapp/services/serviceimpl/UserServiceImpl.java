@@ -35,6 +35,11 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByUserName(userName);
     }
 
+    @Override
+    public Optional<UserEntity> getByUserName() {
+        return Optional.empty();
+    }
+
     public void checkIfUserExist(String userName) throws CustomizedException {
         Optional<UserEntity> userEntity = this.findByUserName(userName);
         if(userEntity.isPresent()) {

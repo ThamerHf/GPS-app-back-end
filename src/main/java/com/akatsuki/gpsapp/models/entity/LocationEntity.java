@@ -42,7 +42,6 @@ public class LocationEntity {
             },
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_name")
-    @JsonIgnore
     private UserEntity user;
 
     @ManyToMany(

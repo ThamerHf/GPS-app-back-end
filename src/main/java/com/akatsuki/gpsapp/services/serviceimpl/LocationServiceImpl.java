@@ -33,7 +33,7 @@ public class LocationServiceImpl implements LocationService {
         Optional<UserEntity> userEntity = userService.findByUserName(username);
         if(userEntity.isPresent()) {
                 UserEntity userEntity1 = userEntity.get();
-                List<LocationEntity> locations = userEntity1.getLocations();
+                List<LocationEntity> locations = this.locationRepository.findByUser(userEntity1);
                 System.out.println("username" + userEntity1.getFirstName());
             System.out.println(locations);
             System.out.println("works");
@@ -65,7 +65,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void updateLocation(long id, LocationRequestDto locationRequestDto) throws CustomizedException {
-        Optional<LocationEntity> locationEntityBddOpt = locationRepository.findById(id);
+        /*Optional<LocationEntity> locationEntityBddOpt = locationRepository.findById(id);
         LocationEntity locationEntityRequest = mappingToLocationEntity(locationRequestDto);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -85,7 +85,7 @@ public class LocationServiceImpl implements LocationService {
         } else {
             throw new CustomizedException(ResponseMessage.LOCATION_NOT_FOUND.toString()
                     , HttpStatus.NOT_FOUND);
-        }
+        }*/
     }
 
     private LocationEntity mappingToLocationEntity(LocationRequestDto locationRequestDto) {
@@ -96,8 +96,7 @@ public class LocationServiceImpl implements LocationService {
         locationEntity.setAdresse(locationRequestDto.getAdresse());
         locationEntity.setDescription(locationRequestDto.getDescription());
         locationEntity.setImages(locationRequestDto.getImages());
-        locationEntity.setTags(locationRequestDto.getTags());
-        locationEntity.setTags(locationRequestDto.getTags());
+        //locationEntity.setTags(locationRequestDto.getTags());
 
         return locationEntity;
 
