@@ -69,6 +69,7 @@ public class LocationServiceImpl implements LocationService {
             }
         }
     }
+
     private LocationResponseDto mappingToLocationResponseDto(LocationEntity locationEntity) {
             LocationResponseDto locationResponseDto = new LocationResponseDto();
             locationResponseDto.setLocationId(locationEntity.getLocationId());
