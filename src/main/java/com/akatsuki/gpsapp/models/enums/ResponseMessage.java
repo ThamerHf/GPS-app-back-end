@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.models.enums;
 
 public enum ResponseMessage {
 
+    TAG_NOT_FOUND("Tag not found"),
     LOGOUT_SUCCESSEFULLY("Lougout successfully"),
     LOGIN_FAIL("UserName or Password is wrong"),
     INTERNAL_ERROR_MESSAGE("Server Internal Error"),

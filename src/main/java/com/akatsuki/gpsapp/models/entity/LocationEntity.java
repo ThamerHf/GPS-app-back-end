@@ -1,8 +1,5 @@
 package com.akatsuki.gpsapp.models.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,12 +25,9 @@ public class LocationEntity {
 
     private Point2D.Double coord;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
-    private List<ImageEntity> images = new ArrayList<>();
+    private ImageEntity image;
 
     @ManyToOne(
             cascade = {

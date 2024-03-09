@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.config;
 
 import com.akatsuki.gpsapp.repository.JwsTokenRepository;
 import com.akatsuki.gpsapp.repository.LocationRepository;
+import com.akatsuki.gpsapp.repository.TagRepository;
 import com.akatsuki.gpsapp.repository.UserRepository;
 import com.akatsuki.gpsapp.services.service.AuthentificationService;
 import com.akatsuki.gpsapp.services.service.JwsService;
@@ -18,8 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -35,10 +34,7 @@ public class GlobalConfig {
     public UserService userService(UserRepository repository, PasswordEncoder passwordEncoder) {
         return new UserServiceImpl(repository, passwordEncoder);
     };
-    @Bean
-    public LocationService locationService(LocationRepository repository, UserService userService) {
-        return new LocationServiceImpl(repository,userService);
-    };
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -62,6 +58,13 @@ public class GlobalConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
 
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public LocationService locationService(LocationRepository locationRepository,
+                                           UserService userService,
+                                           TagRepository tagRepository) {
+        return new LocationServiceImpl(locationRepository, userService, tagRepository);
     }
 
 }
