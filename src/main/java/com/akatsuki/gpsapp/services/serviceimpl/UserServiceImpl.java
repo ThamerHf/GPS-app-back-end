@@ -7,17 +7,13 @@ import com.akatsuki.gpsapp.models.enums.ResponseMessage;
 import com.akatsuki.gpsapp.models.enums.Role;
 import com.akatsuki.gpsapp.repository.UserRepository;
 import com.akatsuki.gpsapp.services.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -31,7 +27,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserEntity> findByUserName(String userName) {
+
         return this.userRepository.findByUserName(userName);
+    }
+
+    @Override
+    public Optional<UserEntity> getByUserName() {
+        return Optional.empty();
     }
 
     public void checkIfUserExist(String userName) throws CustomizedException {
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRole(Role.USER);
         this.userRepository.save(userEntity);
     }
+
 
     private UserEntity mappingToUserEntity(RegisterRequestDto request) {
         return UserEntity.builder()

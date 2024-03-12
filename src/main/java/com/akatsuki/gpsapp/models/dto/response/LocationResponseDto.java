@@ -3,6 +3,7 @@ package com.akatsuki.gpsapp.models.dto.response;
 import com.akatsuki.gpsapp.models.entity.ImageEntity;
 import com.akatsuki.gpsapp.models.entity.TagEntity;
 import com.akatsuki.gpsapp.models.entity.TokenEntity;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
 import java.awt.geom.Point2D;
@@ -11,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@JacksonXmlRootElement(localName = "locations")
 public class LocationResponseDto implements Serializable {
 
-    private static final long serialVersionUID = -6201028315870513028L;
+    private  static  final  long serialVersionUID = 5227328178904171767L;
 
     private Long locationId;
 
@@ -25,9 +27,7 @@ public class LocationResponseDto implements Serializable {
 
     private Point2D.Double coord;
 
-    private List<ImageEntity> images = new ArrayList<>();
+    private ImageEntity image;
 
     private List<TagEntity> tags = new ArrayList<>();
-
-    private List<TokenEntity> tokens = new ArrayList<>();
 }
