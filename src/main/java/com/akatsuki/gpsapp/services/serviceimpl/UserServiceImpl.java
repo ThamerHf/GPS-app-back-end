@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.services.serviceimpl;
 
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
 import com.akatsuki.gpsapp.models.dto.request.RegisterRequestDto;
+import com.akatsuki.gpsapp.models.dto.response.AuthenticatedUserResponseDto;
 import com.akatsuki.gpsapp.models.entity.UserEntity;
 import com.akatsuki.gpsapp.models.enums.ResponseMessage;
 import com.akatsuki.gpsapp.models.enums.Role;
@@ -32,8 +33,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> getByUserName() {
-        return Optional.empty();
+    public UserEntity getByUserName() throws CustomizedException {
+        String userName = this.getAuthenticatedUser();
+        Optional<UserEntity> userEntity = this.findByUserName(userName);
+
+        return userEntity.orElse(null);
     }
 
     public void checkIfUserExist(String userName) throws CustomizedException {
@@ -65,11 +69,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> userEntity = this.findByUserName(username);
-        if(userEntity.isPresent()) {
-            return userEntity.get();
-        }
 
-        return null;
+        return userEntity.orElse(null);
+
     }
 
     @Override
@@ -90,7 +92,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public AuthenticatedUserResponseDto getAuthenticatedUserDto() throws CustomizedException {
+        UserEntity user = this.getByUserName();
+
+        return this.mappingToAuthenticatedUserResponseDto(user);
+    }
+
+    @Override
     public String updateUser(RegisterRequestDto request) {
         return null;
+    }
+
+    private AuthenticatedUserResponseDto mappingToAuthenticatedUserResponseDto(UserEntity user) {
+        AuthenticatedUserResponseDto userResponseDto = new AuthenticatedUserResponseDto();
+        userResponseDto.setUserName(user.getUsername());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setFirstName(user.getFirstName());
+        userResponseDto.setLastName(user.getLastName());
+
+        return userResponseDto;
     }
 }
