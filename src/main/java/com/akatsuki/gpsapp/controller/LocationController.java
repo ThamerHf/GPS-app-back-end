@@ -6,6 +6,7 @@ import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
 import com.akatsuki.gpsapp.models.dto.response.TagResponseDto;
 import com.akatsuki.gpsapp.models.entity.LocationEntity;
+import com.akatsuki.gpsapp.models.enums.ResponseMessage;
 import com.akatsuki.gpsapp.services.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,17 +50,17 @@ public class LocationController implements LocationApi {
     }
 
     @Override
-    public ResponseEntity<String> addImg(MultipartFile image) {
-        MultipartFile img = image;
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<String> updateLocation(long id, LocationRequestDto locationRequestDto)
+    public ResponseEntity<LocationResponseDto> updateLocation(long id,
+                                                              LocationRequestDto locationRequestDto)
             throws CustomizedException {
-        locationService.updateLocation(id, locationRequestDto);
-        return null;
+        LocationResponseDto responseDto = null;
+        try {
+            responseDto = locationService.updateLocation(id, locationRequestDto);
+        } catch (Exception e) {
+            this.handleException(e);
+        }
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @Override

@@ -87,19 +87,23 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void updateLocation(long id, LocationRequestDto locationRequestDto) throws CustomizedException {
+    public LocationResponseDto updateLocation(long id, LocationRequestDto locationRequestDto) throws CustomizedException {
         Optional<LocationEntity> locationEntityBddOpt = locationRepository.findById(String.valueOf(id));
         LocationEntity locationEntityRequest = mappingToLocationEntity(locationRequestDto);
         String username = this.userService.getAuthenticatedUser();
+        LocationResponseDto locationResponseDto = null;
         Optional<UserEntity> userEntity = userService.findByUserName(username);
         if(locationEntityBddOpt.isPresent()) {
             locationEntityRequest.setLocationId(locationEntityBddOpt.get().getLocationId());
-            locationRepository.save(locationEntityRequest);
+            locationResponseDto = this.mappingToLocationResponseDto(
+                    locationRepository.save(locationEntityRequest));
 
         } else {
             throw new CustomizedException(ResponseMessage.LOCATION_NOT_FOUND.toString()
                     , HttpStatus.NOT_FOUND);
         }
+
+        return locationResponseDto;
     }
 
     @Override
