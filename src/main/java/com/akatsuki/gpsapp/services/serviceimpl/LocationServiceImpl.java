@@ -4,6 +4,7 @@ import com.akatsuki.gpsapp.exceptions.CustomizedException;
 import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
 import com.akatsuki.gpsapp.models.dto.response.TagResponseDto;
+import com.akatsuki.gpsapp.models.entity.ImageEntity;
 import com.akatsuki.gpsapp.models.entity.LocationEntity;
 import com.akatsuki.gpsapp.models.entity.TagEntity;
 import com.akatsuki.gpsapp.models.entity.UserEntity;
@@ -18,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,14 +71,14 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationResponseDto createLocation(LocationRequestDto locationRequestDto) {
+    public LocationResponseDto createLocation(LocationRequestDto locationRequestDto)
+            throws CustomizedException {
         LocationEntity locationEntity = mappingToLocationEntity(locationRequestDto);
         String username = this.userService.getAuthenticatedUser();
         Optional<UserEntity> userEntity = userService.findByUserName(username);
         if(userEntity.isPresent()) {
             UserEntity userEntityToSave = userEntity.get();
             locationEntity.setUser(userEntityToSave);
-            System.out.println(locationEntity.getUser().getFirstName());
 
         }
 
@@ -128,14 +130,22 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
-    private LocationEntity mappingToLocationEntity(LocationRequestDto locationRequestDto) {
+    private LocationEntity mappingToLocationEntity(LocationRequestDto locationRequestDto) throws CustomizedException {
         LocationEntity locationEntity = new LocationEntity();
         locationEntity.setLocationId(locationRequestDto.getLocationId());
         locationEntity.setTitle(locationRequestDto.getTitle());
         locationEntity.setCoord(locationRequestDto.getCoord());
         locationEntity.setAdresse(locationRequestDto.getAdresse());
         locationEntity.setDescription(locationRequestDto.getDescription());
-        locationEntity.setImage(locationRequestDto.getImage());
+        ImageEntity image = new ImageEntity();
+        try {
+            image.setFile(locationRequestDto.getImage().getBytes());
+        } catch (IOException e) {
+            throw new CustomizedException(ResponseMessage.ERROR_IMAGE_LOCATION_SAVE.toString(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        locationEntity.setImage(image);
 
         return locationEntity;
     }
@@ -147,7 +157,7 @@ public class LocationServiceImpl implements LocationService {
         locationResponseDto.setCoord(locationEntity.getCoord());
         locationResponseDto.setAdresse(locationEntity.getAdresse());
         locationResponseDto.setDescription(locationEntity.getDescription());
-        locationResponseDto.setImage(locationEntity.getImage());
+        locationResponseDto.setImage(locationEntity.getImage().getFile());
 
         return locationResponseDto;
     }

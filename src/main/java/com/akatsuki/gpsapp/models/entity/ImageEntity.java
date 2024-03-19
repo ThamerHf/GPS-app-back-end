@@ -18,9 +18,8 @@ public class ImageEntity {
     @Column(name = "image_id")
     private Long imageId;
 
-    private String name;
-
-    private Blob encoding;
+    @Lob
+    private byte[] file;
 
     public ImageEntity() {
 

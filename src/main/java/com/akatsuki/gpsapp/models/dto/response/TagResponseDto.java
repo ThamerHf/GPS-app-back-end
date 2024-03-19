@@ -9,12 +9,13 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 @Data
-@JacksonXmlRootElement(localName = "tags")
+@JacksonXmlRootElement(localName = "tagResponseDto")
 public class TagResponseDto implements Serializable{
 
     private  static  final  long serialVersionUID = 798242976076486672L;
 
     private String tag;
+
     private int numberOfLocations;
 
 
