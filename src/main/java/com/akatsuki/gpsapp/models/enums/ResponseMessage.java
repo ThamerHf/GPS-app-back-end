@@ -10,7 +10,8 @@ public enum ResponseMessage {
     USER_NAME_ALREADY_EXISTS("Username already exists"),
     LOCATION_NOT_FOUND("Location not found"),
     USER_CREATED("User created successfully"),
-    LOCATION_CREATED("Location created successfully");
+    LOCATION_CREATED("Location created successfully"),
+    PASSWORD_WRONG("Password is wrong");
     private String message;
 
     private ResponseMessage(String message) {
