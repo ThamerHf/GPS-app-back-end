@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.api;
 
 
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
+import com.akatsuki.gpsapp.models.dto.request.AuthenticatedUserUpdateRequestDto;
 import com.akatsuki.gpsapp.models.dto.request.LoginRequestDto;
 import com.akatsuki.gpsapp.models.dto.request.RegisterRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.AuthenticatedUserResponseDto;
@@ -9,10 +10,7 @@ import com.akatsuki.gpsapp.models.dto.response.GenericResponseDto;
 import com.akatsuki.gpsapp.models.dto.response.TokenResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(path = "/auth", consumes = {MediaType.APPLICATION_JSON_VALUE,
         MediaType.APPLICATION_XML_VALUE},
@@ -31,5 +29,9 @@ public interface AuthenticationApi {
 
     @GetMapping(path = "/auhtenticatedUser")
     public ResponseEntity<AuthenticatedUserResponseDto> getAuthenticatedUser() throws CustomizedException;
+
+    @PatchMapping(path = "/auhtenticatedUser")
+    ResponseEntity<AuthenticatedUserResponseDto> updateUser(
+            @RequestBody(required = true) AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto) throws CustomizedException;
 
 }

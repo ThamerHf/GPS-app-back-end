@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.controller;
 
 import com.akatsuki.gpsapp.api.AuthenticationApi;
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
+import com.akatsuki.gpsapp.models.dto.request.AuthenticatedUserUpdateRequestDto;
 import com.akatsuki.gpsapp.models.dto.request.LoginRequestDto;
 import com.akatsuki.gpsapp.models.dto.request.RegisterRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.AuthenticatedUserResponseDto;
@@ -73,6 +74,20 @@ public class AuthenticationController implements AuthenticationApi {
         }
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<AuthenticatedUserResponseDto> updateUser(
+            AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto) throws CustomizedException {
+        AuthenticatedUserResponseDto authenticatedUserResponseDto = null;
+        try {
+            authenticatedUserResponseDto = this.userService
+                    .updateUser(authenticatedUserUpdateRequestDto);
+        } catch (Exception e) {
+            this.handleException(e);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(authenticatedUserResponseDto);
     }
 
     private void handleException(Exception exception) throws CustomizedException {

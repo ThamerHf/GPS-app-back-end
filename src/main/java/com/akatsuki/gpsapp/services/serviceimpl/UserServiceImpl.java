@@ -1,6 +1,7 @@
 package com.akatsuki.gpsapp.services.serviceimpl;
 
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
+import com.akatsuki.gpsapp.models.dto.request.AuthenticatedUserUpdateRequestDto;
 import com.akatsuki.gpsapp.models.dto.request.RegisterRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.AuthenticatedUserResponseDto;
 import com.akatsuki.gpsapp.models.entity.UserEntity;
@@ -99,8 +100,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUser(RegisterRequestDto request) {
-        return null;
+    public AuthenticatedUserResponseDto updateUser(AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto)
+            throws CustomizedException{
+
+        UserEntity userEntityResponse = this.mappingRequestDtoToUserEntity(authenticatedUserUpdateRequestDto);
+        userEntityResponse = this.userRepository.save(userEntityResponse);
+        AuthenticatedUserResponseDto authenticatedUserResponseDto = this.mappingToAuthenticatedUserResponseDto(userEntityResponse);
+
+        return authenticatedUserResponseDto ;
+    }
+
+
+    private UserEntity mappingRequestDtoToUserEntity(AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto)
+            throws CustomizedException{
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setFirstName(authenticatedUserUpdateRequestDto.getFirstName());
+        userEntity.setLastName(authenticatedUserUpdateRequestDto.getLastName());
+        userEntity.setEmail(authenticatedUserUpdateRequestDto.getEmail());
+        if (!(this.passwordEncoder.matches(authenticatedUserUpdateRequestDto.getOldPwd(),
+                this.getByUserName().getPassword()))) {
+            throw new CustomizedException(ResponseMessage.PASSWORD_WRONG.toString(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        userEntity.setPassword(this.passwordEncoder.encode(authenticatedUserUpdateRequestDto.getNewPwd()));
+        return userEntity;
+
     }
 
     private AuthenticatedUserResponseDto mappingToAuthenticatedUserResponseDto(UserEntity user) {
