@@ -102,31 +102,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthenticatedUserResponseDto updateUser(AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto)
             throws CustomizedException{
-
         UserEntity userEntityResponse = this.mappingRequestDtoToUserEntity(authenticatedUserUpdateRequestDto);
         userEntityResponse = this.userRepository.save(userEntityResponse);
-        AuthenticatedUserResponseDto authenticatedUserResponseDto = this.mappingToAuthenticatedUserResponseDto(userEntityResponse);
 
-        return authenticatedUserResponseDto ;
+        return this.mappingToAuthenticatedUserResponseDto(userEntityResponse);
     }
 
 
     private UserEntity mappingRequestDtoToUserEntity(AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto)
             throws CustomizedException{
+        UserEntity userToUpdate = this.getByUserName();
+        if (authenticatedUserUpdateRequestDto.getNewPwd() == null) {
+            throw new CustomizedException(ResponseMessage.NEW_PASSWORD_REQUIRED.toString(),
+                    HttpStatus.BAD_REQUEST);
+        }
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setFirstName(authenticatedUserUpdateRequestDto.getFirstName());
-        userEntity.setLastName(authenticatedUserUpdateRequestDto.getLastName());
-        userEntity.setEmail(authenticatedUserUpdateRequestDto.getEmail());
         if (!(this.passwordEncoder.matches(authenticatedUserUpdateRequestDto.getOldPwd(),
-                this.getByUserName().getPassword()))) {
+                userToUpdate.getPassword()))) {
             throw new CustomizedException(ResponseMessage.PASSWORD_WRONG.toString(),
                     HttpStatus.BAD_REQUEST);
         }
 
-        userEntity.setPassword(this.passwordEncoder.encode(authenticatedUserUpdateRequestDto.getNewPwd()));
-        return userEntity;
+        if (authenticatedUserUpdateRequestDto.getFirstName() != null) {
+            userToUpdate.setFirstName(authenticatedUserUpdateRequestDto.getFirstName());
+        }
 
+        if (authenticatedUserUpdateRequestDto.getLastName() != null) {
+            userToUpdate.setLastName(authenticatedUserUpdateRequestDto.getLastName());
+        }
+
+        if (authenticatedUserUpdateRequestDto.getEmail() != null) {
+            userToUpdate.setEmail(authenticatedUserUpdateRequestDto.getEmail());
+        }
+
+        if (authenticatedUserUpdateRequestDto.getNewPwd() != null) {
+            userToUpdate.setPassword(this.passwordEncoder.encode(authenticatedUserUpdateRequestDto.getNewPwd()));
+        }
+
+        return userToUpdate;
     }
 
     private AuthenticatedUserResponseDto mappingToAuthenticatedUserResponseDto(UserEntity user) {

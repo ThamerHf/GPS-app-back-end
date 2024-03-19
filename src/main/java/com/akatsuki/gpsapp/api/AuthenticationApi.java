@@ -32,6 +32,7 @@ public interface AuthenticationApi {
 
     @PatchMapping(path = "/auhtenticatedUser")
     ResponseEntity<AuthenticatedUserResponseDto> updateUser(
-            @RequestBody(required = true) AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto) throws CustomizedException;
+            @RequestBody(required = true) AuthenticatedUserUpdateRequestDto authenticatedUserUpdateRequestDto)
+            throws CustomizedException;
 
 }
