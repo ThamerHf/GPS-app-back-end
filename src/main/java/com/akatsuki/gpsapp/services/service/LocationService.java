@@ -18,7 +18,7 @@ public interface LocationService {
 
     public LocationResponseDto createLocation(LocationRequestDto locationRequestDto) throws CustomizedException;
 
-    public void updateLocation(long id, LocationRequestDto locationRequestDto) throws CustomizedException;
+    public LocationResponseDto updateLocation(long id, LocationRequestDto locationRequestDto) throws CustomizedException;
 
     public List<TagResponseDto> getTags() throws CustomizedException;
 

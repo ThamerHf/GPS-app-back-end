@@ -36,9 +36,9 @@ public interface LocationApi {
     ResponseEntity<LocationResponseDto> createLocation(@ModelAttribute LocationRequestDto
                                                                locationRequestDto) throws CustomizedException;
 
-    @PutMapping("/locations/{id}")
-    ResponseEntity<String> updateLocation(@PathVariable long id,
-                                          @RequestBody LocationRequestDto locationRequestDto)
+    @PatchMapping("/locations/{id}")
+    ResponseEntity<LocationResponseDto> updateLocation(@PathVariable long id,
+                                          @ModelAttribute LocationRequestDto locationRequestDto)
             throws CustomizedException;
 
    @DeleteMapping("/locations/{id}")
