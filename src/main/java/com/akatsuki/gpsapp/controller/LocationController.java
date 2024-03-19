@@ -3,16 +3,16 @@ package com.akatsuki.gpsapp.controller;
 import com.akatsuki.gpsapp.api.LocationApi;
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
 import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
-import com.akatsuki.gpsapp.models.dto.response.GenericResponseDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
-import com.akatsuki.gpsapp.models.enums.ResponseMessage;
 import com.akatsuki.gpsapp.models.dto.response.TagResponseDto;
 import com.akatsuki.gpsapp.models.entity.LocationEntity;
 import com.akatsuki.gpsapp.services.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +36,24 @@ public class LocationController implements LocationApi {
     }
 
     @Override
-    public ResponseEntity<LocationResponseDto> createLocation(LocationRequestDto locationRequestDto) {
-        LocationResponseDto responseDto = this.locationService.createLocation(locationRequestDto);
+    public ResponseEntity<LocationResponseDto> createLocation(LocationRequestDto locationRequestDto)
+            throws CustomizedException {
+        LocationResponseDto responseDto = null;
+        try {
+            responseDto = this.locationService.createLocation(locationRequestDto);
+        } catch (Exception e) {
+            this.handleException(e);
+        }
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    @Override
+    public ResponseEntity<String> addImg(MultipartFile image) {
+        MultipartFile img = image;
+        return null;
+    }
+
 
     @Override
     public ResponseEntity<String> updateLocation(long id, LocationRequestDto locationRequestDto)
@@ -50,7 +63,7 @@ public class LocationController implements LocationApi {
     }
 
     @Override
-    public ResponseEntity<List<LocationResponseDto>> getTag(Long tagId)
+    public ResponseEntity<List<LocationResponseDto>> getLocationForTag(Long tagId)
             throws CustomizedException {
 
         List<LocationResponseDto> locationResponseDtos = new ArrayList<>();
@@ -108,10 +121,6 @@ public class LocationController implements LocationApi {
         return null;
     }
 
-    @Override
-    public ResponseEntity<List<LocationResponseDto>> getLocationsByTag() {
-        return null;
-    }
 
     @Override
     public ResponseEntity<Void> deleteLocation(long id) {

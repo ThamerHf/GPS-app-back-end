@@ -1,6 +1,7 @@
 package com.akatsuki.gpsapp.models.enums;
 
 public enum ResponseMessage {
+    ERROR_IMAGE_LOCATION_SAVE("Error when trying to save location image"),
 
     TAG_NOT_FOUND("Tag not found"),
     LOGOUT_SUCCESSEFULLY("Lougout successfully"),

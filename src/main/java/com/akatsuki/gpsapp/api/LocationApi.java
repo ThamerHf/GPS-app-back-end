@@ -5,6 +5,7 @@ import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,38 +14,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RequestMapping(path = "",
         consumes = {MediaType.APPLICATION_JSON_VALUE,
-                MediaType.APPLICATION_XML_VALUE},
+                MediaType.APPLICATION_XML_VALUE,
+                MediaType.MULTIPART_FORM_DATA_VALUE},
         produces = {MediaType.APPLICATION_JSON_VALUE,
-                MediaType.APPLICATION_XML_VALUE})
+                MediaType.APPLICATION_XML_VALUE,
+                MediaType.MULTIPART_FORM_DATA_VALUE})
 public interface LocationApi {
 
-    @GetMapping("/")
+    @GetMapping("/locations")
     List<LocationResponseDto> getAllLocations();
 
-    @GetMapping("/{id} ")
+    @GetMapping("/locations/{id} ")
     ResponseEntity<LocationResponseDto> getLocation(@PathVariable long id);
 
     @PostMapping("/locations")
-    ResponseEntity<LocationResponseDto> createLocation(@RequestBody LocationRequestDto locationRequestDto);
+    ResponseEntity<LocationResponseDto> createLocation(@ModelAttribute LocationRequestDto
+                                                               locationRequestDto) throws CustomizedException;
 
-    @PutMapping("/{id}")
+    @PutMapping("/locations/{id}")
     ResponseEntity<String> updateLocation(@PathVariable long id,
                                           @RequestBody LocationRequestDto locationRequestDto)
             throws CustomizedException;
 
-    @GetMapping("/{tag}")
-    ResponseEntity<List<LocationResponseDto>> getLocationsByTag();
-
-   @DeleteMapping("/{id}")
+   @DeleteMapping("/locations/{id}")
    ResponseEntity<Void> deleteLocation(@PathVariable long id);
 
-    @GetMapping(path = "/tags/{tagId}/locations")
-    public ResponseEntity<List<LocationResponseDto>> getTag(
-            @RequestParam(name = "tagId", required = true) Long tagId
+    @GetMapping(path = "/tags/{tagId}")
+    public ResponseEntity<List<LocationResponseDto>> getLocationForTag(
+            @PathVariable(name = "tagId", required = true) Long tagId
     ) throws CustomizedException;
 
     @GetMapping(path = "/tags")
