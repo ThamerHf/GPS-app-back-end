@@ -36,9 +36,6 @@ public interface LocationApi {
     ResponseEntity<LocationResponseDto> createLocation(@ModelAttribute LocationRequestDto
                                                                locationRequestDto) throws CustomizedException;
 
-    @PostMapping("/loc")
-    ResponseEntity<String> addImg(@RequestParam("img")MultipartFile image);
-
     @PutMapping("/locations/{id}")
     ResponseEntity<String> updateLocation(@PathVariable long id,
                                           @RequestBody LocationRequestDto locationRequestDto)
