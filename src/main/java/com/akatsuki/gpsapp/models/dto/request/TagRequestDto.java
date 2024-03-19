@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@JacksonXmlRootElement(localName = "tags")
+@JacksonXmlRootElement(localName = "tagRequestDto")
 public class TagRequestDto implements Serializable {
 
     private  static  final  long serialVersionUID = -3267780769407838840L;
