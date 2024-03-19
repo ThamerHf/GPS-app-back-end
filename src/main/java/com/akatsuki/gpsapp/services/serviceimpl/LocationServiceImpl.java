@@ -136,20 +136,36 @@ public class LocationServiceImpl implements LocationService {
 
     private LocationEntity mappingToLocationEntity(LocationRequestDto locationRequestDto) throws CustomizedException {
         LocationEntity locationEntity = new LocationEntity();
-        locationEntity.setLocationId(locationRequestDto.getLocationId());
-        locationEntity.setTitle(locationRequestDto.getTitle());
-        locationEntity.setCoord(locationRequestDto.getCoord());
-        locationEntity.setAdresse(locationRequestDto.getAdresse());
-        locationEntity.setDescription(locationRequestDto.getDescription());
+        if (locationRequestDto.getLocationId() != null) {
+            locationEntity.setLocationId(locationRequestDto.getLocationId());
+        }
+
+        if (locationRequestDto.getTitle() != null) {
+            locationEntity.setTitle(locationRequestDto.getTitle());
+        }
+
+        if (locationRequestDto.getCoord() != null) {
+            locationEntity.setCoord(locationRequestDto.getCoord());
+        }
+
+        if (locationRequestDto.getAdresse() != null) {
+            locationEntity.setAdresse(locationRequestDto.getAdresse());
+        }
+
+        if (locationRequestDto.getDescription() != null) {
+            locationEntity.setDescription(locationRequestDto.getDescription());
+        }
+
         ImageEntity image = new ImageEntity();
         try {
-            image.setFile(locationRequestDto.getImage().getBytes());
+            if (locationRequestDto.getImage() != null) {
+                image.setFile(locationRequestDto.getImage().getBytes());
+                locationEntity.setImage(image);
+            }
         } catch (IOException e) {
             throw new CustomizedException(ResponseMessage.ERROR_IMAGE_LOCATION_SAVE.toString(),
                     HttpStatus.BAD_REQUEST);
         }
-
-        locationEntity.setImage(image);
 
         return locationEntity;
     }
