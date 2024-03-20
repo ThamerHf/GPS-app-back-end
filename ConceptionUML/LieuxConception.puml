@@ -165,25 +165,18 @@ package services {
     package serviceImpl {
         class LocationServiceImpl
     }
-
-    package mapper {
-        class ImageMapper
-        class LocationMapper
-    }
 }
 
-package model {
+package models {
     package dto {
-        package requestDto {
+        package request {
             class LocationReqDto
             class TagReqDto
         }
 
-        package responseDto {
+        package response {
             class LocationResDto
-            class CollectionResDto
             class TagResDto
-            class ImageResDto
         }
     }
 
@@ -195,6 +188,7 @@ package model {
 
     package repository {
         interface LocationRepository
+        interface TagRepository
     }
 }
 
@@ -208,13 +202,11 @@ TagEntity "*"<--"1..*" LocationEntity
 ImageEntity "*" <-- "1" LocationEntity
 LocationEntity <.."use" LocationServiceImpl
 LocationRepository "1"<-- LocationServiceImpl
+TagRepository "1"<-- LocationServiceImpl
 LocationResDto <.."use" LocationService
 LocationResDto <.."use" LocationService
-ImageMapper <.. LocationMapper
-LocationMapper <-- LocationServiceImpl
-CollectionResDto <-- LocationApi
+TagResDto <-- LocationApi
 TagResDto "*"<--"*" LocationResDto
-ImageResDto "*"<-- LocationResDto
 }
 
 @enduml

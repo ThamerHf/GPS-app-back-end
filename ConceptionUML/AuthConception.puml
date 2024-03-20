@@ -1,0 +1,81 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "API Auth" {
+    package "api" {
+        interface AuthenticationApi
+    }
+
+    package "controller" {
+        class AuthenticationController
+    }
+
+    package "models" {
+        package "dto" {
+            package "request" {
+                class AuthenticatedUserUpdateRequestDto
+                class LoginRequestDto
+                class RegisterRequestDto
+            }
+
+            package "response" {
+                class AuthenticatedUserResponseDto
+                class TokenResponseDto
+            }
+        }
+        package "entity" {
+                        class UserEntity
+                        class TokenEntity
+                    }
+
+                    package "enums" {
+                        enum Rights
+                        enum Role
+                        enum TokenType
+                    }
+    }
+
+    package "repository" {
+        interface JwsTokenRepository
+        interface UserRepository
+    }
+
+    package "services" {
+        package "service" {
+            interface AuthentificationService
+            interface JwsService
+            interface UserService
+        }
+
+        package "serviceimpl" {
+            class AuthentificationServiceIml
+            class JwsServiceImpl
+            class UserServiceImpl
+        }
+    }
+}
+
+AuthenticationApi <|.."implements" AuthenticationController
+UserService <|.. "implements" UserServiceImpl
+JwsService <|.. "implements" JwsServiceImpl
+AuthentificationService <|.. "implements" AuthentificationServiceIml
+JwsService <-- AuthentificationServiceIml
+UserService <-- AuthentificationServiceIml
+UserRepository <-- UserServiceImpl
+JwsTokenRepository <-- JwsServiceImpl
+UserService <-- AuthenticationController
+AuthentificationService <-- AuthenticationController
+AuthenticatedUserUpdateRequestDto <.. "use" AuthenticationApi
+AuthenticatedUserUpdateRequestDto <.. "use" AuthentificationService
+LoginRequestDto <.. "use" AuthenticationApi
+LoginRequestDto <.. "use" AuthentificationService
+RegisterRequestDto <.. "use" AuthenticationApi
+RegisterRequestDto <.. "use" AuthentificationService
+RegisterRequestDto <.. "use" UserService
+AuthenticatedUserResponseDto <.. "use" AuthenticationApi
+AuthenticatedUserResponseDto <.. "use" UserService
+TokenResponseDto <.. "use" AuthenticationApi
+TokenResponseDto <.. "use" AuthentificationService
+TokenEntity <.. "use" JwsTokenRepository
+UserEntity <.. "use" UserService
+@enduml
