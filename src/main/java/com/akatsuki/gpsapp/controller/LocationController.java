@@ -81,9 +81,12 @@ public class LocationController implements LocationApi {
     public ResponseEntity<List<TagResponseDto>> getTags() throws CustomizedException {
 
         List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+        System.out.println("test2");
+
         try {
             tagResponseDtos = this.locationService.getTags();
         } catch (Exception e) {
+            System.out.println("test1");
             this.handleException(e);
         }
 
