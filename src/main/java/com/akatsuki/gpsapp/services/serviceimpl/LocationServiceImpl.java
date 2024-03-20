@@ -244,12 +244,17 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<TagResponseDto> getTags() throws CustomizedException {
+        System.out.println("test");
         List<TagResponseDto> ownedTags = this.getOwnedTags();
-        List<TagResponseDto> sharedTags = this.getSharedTags();
+        //List<TagResponseDto> sharedTags = this.getSharedTags();
         List<TagResponseDto> tags = new ArrayList<>();
         tags.addAll(ownedTags);
-        tags.addAll(sharedTags);
+        //tags.addAll(sharedTags);
 
+        for (TagResponseDto tag: tags
+             ) {
+            System.out.println(tag);
+        }
         return tags;
     }
 
@@ -257,6 +262,7 @@ public class LocationServiceImpl implements LocationService {
     public List<TagResponseDto> getOwnedTags() throws CustomizedException {
         String userName = this.userService
                 .getAuthenticatedUser();
+        System.out.println(userName);
         List<LocationEntity> locationEntities = this.locationRepository
                 .findByUser(this.userService.getByUserName());
         List<TagEntity> tagEntities = new ArrayList<>();
@@ -265,28 +271,41 @@ public class LocationServiceImpl implements LocationService {
         }
 
         List<TagResponseDto> responseDtos = new ArrayList<>();
+        Set<String> tagsUnique = new HashSet<String>();
         for (TagEntity tag: tagEntities) {
-            responseDtos.add(this.mappingToTagResponseDto(tag));
+            if(!tagsUnique.contains(tag.getTag())) {
+                responseDtos.add(this.mappingToTagResponseDto(tag));
+                tagsUnique.add(tag.getTag());
+            }
         }
+        System.out.println("test Owned");
+
 
         return responseDtos;
     }
 
     @Override
-    public List<TagResponseDto> getSharedTags() throws CustomizedException {
+    public List<TagResponseDto> getSharedTags() {
 
         String userName = this.userService
                 .getAuthenticatedUser();
         List<TagEntity> tagEntities = this.tagRepository
                 .findTagsSharedWithUser(userName);
         List<TagResponseDto> responseDtos = new ArrayList<>();
+        List<TagResponseDto> responseDtosUnique = new ArrayList<>();
         responseDtos.add(this.getOrphanLocations());
-
-        for (TagEntity tag: tagEntities) {
-            responseDtos.add(this.mappingToTagResponseDto(tag));
+        Set<String> tagsUnique = new HashSet<String>();
+        for (TagResponseDto tag: responseDtos) {
+            if(!tagsUnique.contains(tag.getTag())) {
+                responseDtosUnique.add(tag);
+                tagsUnique.add(tag.getTag());
+            }
         }
+        for (TagEntity tag: tagEntities) {
+            responseDtosUnique.add(this.mappingToTagResponseDto(tag));
 
-        return responseDtos;
+        }
+        return responseDtosUnique;
     }
 
     private TagResponseDto getOrphanLocations() {
