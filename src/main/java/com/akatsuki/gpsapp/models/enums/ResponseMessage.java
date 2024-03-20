@@ -1,6 +1,8 @@
 package com.akatsuki.gpsapp.models.enums;
 
 public enum ResponseMessage {
+
+    LONCATION_COORDONNE_ERROR("Location should have (x, y) coordonnates"),
     NEW_PASSWORD_REQUIRED("New password is required"),
     LOCATION_UPDATE("Location updated successfully"),
     ERROR_IMAGE_LOCATION_SAVE("Error when trying to save location image"),

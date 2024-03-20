@@ -19,11 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.awt.geom.Point2D;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LocationServiceImpl implements LocationService {
@@ -144,8 +141,15 @@ public class LocationServiceImpl implements LocationService {
             locationEntity.setTitle(locationRequestDto.getTitle());
         }
 
-        if (locationRequestDto.getCoord() != null) {
-            locationEntity.setCoord(locationRequestDto.getCoord());
+
+        if (locationRequestDto.getCoord() != null &&
+                !locationRequestDto.getCoord().isEmpty()) {
+            if (locationRequestDto.getCoord().size()!=2) {
+                throw new CustomizedException(ResponseMessage
+                        .LONCATION_COORDONNE_ERROR.toString(), HttpStatus.BAD_REQUEST);
+            }
+            locationEntity.setCoord(new Point2D.Double(locationRequestDto.getCoord().get(0),
+                    locationRequestDto.getCoord().get(1)));
         }
 
         if (locationRequestDto.getAdresse() != null) {
@@ -157,27 +161,62 @@ public class LocationServiceImpl implements LocationService {
         }
 
         ImageEntity image = new ImageEntity();
-        try {
-            if (locationRequestDto.getImage() != null) {
-                image.setFile(locationRequestDto.getImage().getBytes());
-                locationEntity.setImage(image);
-            }
-        } catch (IOException e) {
-            throw new CustomizedException(ResponseMessage.ERROR_IMAGE_LOCATION_SAVE.toString(),
-                    HttpStatus.BAD_REQUEST);
+        if (locationRequestDto.getImage() != null) {
+            image.setFile(locationRequestDto.getImage());
+            locationEntity.setImage(image);
+        }
+
+        if (!locationRequestDto.getTags().isEmpty()) {
+            locationEntity.setTags(this.mapToTagEntity(locationRequestDto.getTags()));
         }
 
         return locationEntity;
+    }
+
+    private List<TagEntity> mapToTagEntity(List<String> tags)
+            throws CustomizedException {
+        List<String> ownedTags = this.getOwnedTags().stream()
+                .map(TagResponseDto::getTag)
+                .collect(Collectors.toList());
+        tags.add("All");
+        tags = new ArrayList<>(new HashSet<>(tags));
+        List<TagEntity> returnedTags = new ArrayList<>();
+        for (String t : tags) {
+            if (!ownedTags.contains(t)) {
+                returnedTags.add(this.tagRepository.save(new TagEntity(t)));
+            } else {
+                Optional<TagEntity> tag = this.tagRepository.findByTag(t);
+                if (tag.isPresent()) {
+                    returnedTags.add(this.tagRepository.findByTag(t).get());
+                }
+            }
+        }
+
+        return returnedTags;
     }
 
     private LocationResponseDto mappingToLocationResponseDto(LocationEntity locationEntity) {
         LocationResponseDto locationResponseDto = new LocationResponseDto();
         locationResponseDto.setLocationId(locationEntity.getLocationId());
         locationResponseDto.setTitle(locationEntity.getTitle());
-        locationResponseDto.setCoord(locationEntity.getCoord());
+        List<Double> coord = new ArrayList<>();
+        if (locationEntity.getCoord() != null) {
+            coord.add(locationEntity.getCoord().getX());
+            coord.add(locationEntity.getCoord().getY());
+            locationResponseDto.setCoord(coord);
+        }
+
         locationResponseDto.setAdresse(locationEntity.getAdresse());
         locationResponseDto.setDescription(locationEntity.getDescription());
-        locationResponseDto.setImage(locationEntity.getImage().getFile());
+        if (locationEntity.getImage() != null) {
+            locationResponseDto.setImage(locationEntity.getImage().getFile());
+        } else {
+            locationResponseDto.setImage(new byte[0]);
+        }
+
+        locationResponseDto.setTags(locationEntity
+                .getTags().stream()
+                .map(TagEntity::getTag).collect(Collectors.toList()));
 
         return locationResponseDto;
     }
@@ -218,10 +257,14 @@ public class LocationServiceImpl implements LocationService {
     public List<TagResponseDto> getOwnedTags() throws CustomizedException {
         String userName = this.userService
                 .getAuthenticatedUser();
-        List<TagEntity> tagEntities = this.tagRepository
-                .findTagsByUserName(userName);
-        List<TagResponseDto> responseDtos = new ArrayList<>();
+        List<LocationEntity> locationEntities = this.locationRepository
+                .findByUser(this.userService.getByUserName());
+        List<TagEntity> tagEntities = new ArrayList<>();
+        for (LocationEntity loc : locationEntities) {
+            tagEntities.addAll(loc.getTags());
+        }
 
+        List<TagResponseDto> responseDtos = new ArrayList<>();
         for (TagEntity tag: tagEntities) {
             responseDtos.add(this.mappingToTagResponseDto(tag));
         }

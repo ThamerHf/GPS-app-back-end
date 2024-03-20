@@ -2,6 +2,7 @@ package com.akatsuki.gpsapp.models.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class LocationEntity {
     @JoinColumn(name = "image_id")
     private ImageEntity image;
 
+    @ToString.Exclude
     @ManyToOne(
             cascade = {
                     CascadeType.MERGE,
@@ -38,6 +40,7 @@ public class LocationEntity {
     @JoinColumn(name = "user_name")
     private UserEntity user;
 
+    @ToString.Exclude
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {
@@ -52,6 +55,7 @@ public class LocationEntity {
     )
     private List<TagEntity> tags = new ArrayList<>();
 
+    @ToString.Exclude
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {

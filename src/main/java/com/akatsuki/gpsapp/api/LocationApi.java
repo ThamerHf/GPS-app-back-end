@@ -2,7 +2,9 @@ package com.akatsuki.gpsapp.api;
 
 import com.akatsuki.gpsapp.exceptions.CustomizedException;
 import com.akatsuki.gpsapp.models.dto.request.LocationRequestDto;
+import com.akatsuki.gpsapp.models.dto.request.LocationRequestInterDto;
 import com.akatsuki.gpsapp.models.dto.response.LocationResponseDto;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,12 +35,12 @@ public interface LocationApi {
     ResponseEntity<LocationResponseDto> getLocation(@PathVariable long id);
 
     @PostMapping("/locations")
-    ResponseEntity<LocationResponseDto> createLocation(@ModelAttribute LocationRequestDto
+    ResponseEntity<LocationResponseDto> createLocation(@RequestBody LocationRequestDto
                                                                locationRequestDto) throws CustomizedException;
 
     @PatchMapping("/locations/{id}")
     ResponseEntity<LocationResponseDto> updateLocation(@PathVariable long id,
-                                          @ModelAttribute LocationRequestDto locationRequestDto)
+                                          @RequestBody LocationRequestDto locationRequestDto)
             throws CustomizedException;
 
    @DeleteMapping("/locations/{id}")

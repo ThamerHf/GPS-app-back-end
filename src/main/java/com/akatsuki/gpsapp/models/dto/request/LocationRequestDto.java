@@ -29,11 +29,11 @@ public class LocationRequestDto implements Serializable {
     private String adresse;
 
     @Nullable
-    private Point2D.Double coord;
+    private List<Double> coord = new ArrayList<>();
 
     @Nullable
-    private MultipartFile image;
+    private byte[] image;
 
     @Nullable
-    private List<TagEntity> tags = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 }

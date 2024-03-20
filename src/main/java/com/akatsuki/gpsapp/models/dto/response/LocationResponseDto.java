@@ -26,9 +26,9 @@ public class LocationResponseDto implements Serializable {
 
     private String adresse;
 
-    private Point2D.Double coord;
+    private List<Double> coord = new ArrayList<>();
 
     private byte[] image;
 
-    private List<TagEntity> tags = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 }

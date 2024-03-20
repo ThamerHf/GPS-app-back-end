@@ -36,11 +36,13 @@ public class TokenEntity {
     @Enumerated(EnumType.STRING)
     private Rights rights;
 
+    @ToString.Exclude
     @ManyToMany(
             mappedBy = "tokens"
     )
     private List<LocationEntity> locations = new ArrayList<>();
 
+    @ToString.Exclude
     @ManyToMany(
             mappedBy = "tokens"
     )

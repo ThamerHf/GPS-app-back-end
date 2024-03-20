@@ -43,4 +43,8 @@ public class TagEntity {
     public TagEntity() {
 
     }
+
+    public TagEntity(String tag) {
+        this.tag = tag;
+    }
 }
